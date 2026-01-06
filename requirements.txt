@@ -3,3 +3,5 @@ python-dotenv
 pandas
 polars
 requests
+apache-airflow-providers-odbc 
+apache-airflow-providers-microsoft-mssql 
