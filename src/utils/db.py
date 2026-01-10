@@ -1,23 +1,16 @@
 import pyodbc
-import os
-from dotenv import load_dotenv
-
-# Carga variables de entorno
-load_dotenv()
+from airflow.hooks.base import BaseHook
 
 def get_connection():
-    server = os.getenv("DB_SERVER")
-    database = os.getenv("DB_NAME")
-    username = os.getenv("DB_USER")
-    password = os.getenv("DB_PASSWORD")
-    
-    conn_str = (
-        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
-        f"SERVER={server};"
-        f"DATABASE={database};"
-        f"UID={username};"
-        f"PWD={password}"
+    conn = BaseHook.get_connection("sqlserver_weather")
+
+    connection_string = (
+        f"DRIVER={{{conn.extra_dejson['driver']}}};"
+        f"SERVER={conn.host},{conn.port};"
+        f"DATABASE={conn.schema};"
+        f"UID={conn.login};"
+        f"PWD={conn.password}"
     )
-    
-    conn = pyodbc.connect(conn_str)
-    return conn
+
+    return pyodbc.connect(connection_string)
+
